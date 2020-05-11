@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/Javascript">
+/*
+	< Ajax통신순서 >
+	1. XMLHttpRequest 객체 얻어오기
+	2. XMLHttpRequest 객체를 통해 웹서버에 요청하기
+	3. 콜백메소드를 통해 웹서버에서 응답된 정보를 화면에 반영하기
+*/
+	var xhr=null;
+	function getBook() {
+		xhr=new XMLHttpRequest();
+		//서버에서 응답이 오면 호출되는 콜백함수 지정하기
+		xhr.onreadystatechange=callback; //callback함수
+		xhr.open('get','bookinfo.xml',true); //get방식(post도 가능)
+		xhr.send(); //submit과 같음
+	}
+	function callback(){
+		/*
+			xhr.readyState==0 : open호출전
+			xhr.readyState==1 : send호출전
+			xhr.readyState==2 : request를 받은 상태
+			xhr.readyState==3 : 서버에서 request 처리중인 상태
+			xhr.readyState==4 : 서버에서 응답이 완료된 상태
+		*/
+		console.log("xhr.readyState:"+xhr.readyState);
+		if(xhr.readyState==4 && xhr.status==200){ //4가 호출이 되었다는 뜻, status가 200이면 성공적으로 호출되었다는 뜻(500,404등은 에러)
+			//응답결과를 text로 받아오기	
+			//var xml=xhr.responseText;
+			//alert(xml);
+			var xml=xhr.responseXML; //응답결과를 XML DOM객체로 얻어오기
+			//alert(xml);
+			var title=xml.getElementsByTagName("title")[0].firstChild.nodeValue;
+			var price=xml.getElementsByTagName("price")[0].firstChild.nodeValue;
+			var div=document.getElementById("bookinfo");
+			div.innerHTML="도서제목:"+title +"<br>" +
+						  "가격:" +price+"<br>";
+		}
+	}
+</script>
+</head>
+<body>
+<!--
+	Ajax(Asynchronous Javascript and XML)
+	- 비동기통신방식(요청 후 응답할 때 까지 대기하는것이 아니라 다른일을 하면서 응답을 기다림)의 자바스크립트와 XML
+	- 웹브라우저가 아닌 XMLHttpRequest객체를 통해 웹서버와 통신한다.
+	- 웹서버의 응답결과는 xml또는 단순 텍스트로 응답된다.
+	- 페이지의 이동없이 결과가 화면에 반영된다.
+	- callback함수(응답이 오면 자동으로 호출되는 함수)
+-->
+<input type="button" value="도서정보" onclick="getBook()">
+<div id="bookinfo"></div>
+</body>
+</html>

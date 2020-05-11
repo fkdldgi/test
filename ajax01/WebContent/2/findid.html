@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	var xhr=null;
+	function findId(){
+		var email=document.getElementById("email").value;
+		xhr=new XMLHttpRequest();
+		xhr.onreadystatechange=callback;
+		xhr.open('get','findid.jsp?email='+email,true);
+		xhr.send();
+	}
+	function callback(){
+		if(xhr.readyState==4 && xhr.status==200){
+			var xml=xhr.responseXML;
+			var code=xml.getElementsByTagName("code")[0].firstChild.nodeValue;
+			var getId=xml.getElementsByTagName("id")[0];
+			var div=document.getElementById("result");
+			//방법1
+			if(getId!=null){
+				var id=getId.firstChild.nodeValue;
+				div.innerHTML="결과: "+code+"<br>"+
+				  "아이디:"+id+"<br>";
+			}else{
+				div.innerHTML="결과: "+code;
+			}
+			/*
+			방법2
+			if(code=='success'){
+				var id=xml.getElementsByTagName("id")[0].firstChild.nodeValue;
+				div.innerHTML="아이디:"+id;
+			}else if(code=='fail'){
+				div.innerHTML="해당정보를 찾을 수 없습니다..";
+			}
+			*/
+		}
+	}
+</script>
+</head>
+<body>
+<h1>아이디찾기</h1>
+이메일입력 <input type="text" id="email">
+<input type="button" value="찾기" onclick="findId()">
+<br>
+<div id="result"></div>
+</body>
+</html>

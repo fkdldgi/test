@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	var xhr=null;
+	function calc(){
+		var num1=document.getElementById("num1").value;
+		var num2=document.getElementById("num2").value;
+		var op=document.getElementById("op").value;
+		xhr=new XMLHttpRequest();
+		xhr.onreadystatechange=callback;
+		xhr.open('get','quiz.jsp?num1='+num1+'&num2='+num2+'&op='+op,true);
+		xhr.send();
+	}
+	function callback(){
+		if(xhr.readyState==4 && xhr.status==200){
+			var xml=xhr.responseXML;
+			var calc=xml.getElementsByTagName("calc")[0].firstChild.nodeValue;
+			var div=document.getElementById("result");
+			div.innerHTML="결과: "+calc;
+		}
+	}
+</script>
+</head>
+<body>
+<!-- ajax를 사용해서 사칙연산 결과를 div#result에 출력되도록 해보세요. -->
+<input type="text" id="num1" size="10" value="1">
+<select id="op">
+	<option value="1">+</option>
+	<option value="2">-</option>
+	<option value="3">*</option>
+	<option value="4">/</option>
+</select>
+<input type="text" id="num2" size="10" value="1">
+<input type="button" value="계산" onclick="calc()">
+<div id="result"></div>
+</body>
+</html>
